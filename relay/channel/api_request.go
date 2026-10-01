@@ -12,6 +12,7 @@ import (
 	"time"
 
 	common2 "github.com/QuantumNous/new-api/common"
+	channelconstant "github.com/QuantumNous/new-api/constant"
 	"github.com/QuantumNous/new-api/logger"
 	"github.com/QuantumNous/new-api/relay/common"
 	"github.com/QuantumNous/new-api/relay/constant"
@@ -579,8 +580,14 @@ func doRequest(c *gin.Context, req *http.Request, info *common.RelayInfo) (*http
 		))
 	}
 
-	if upID := resp.Header.Get(common2.RequestIdKey); upID != "" {
-		c.Set(common2.UpstreamRequestIdKey, upID)
+	// sub2api 网关不回 X-Oneapi-Request-Id，它把自己生成的请求标识放在
+	// X-Client-Request-ID 里，所以按渠道类型回退到那个头名。
+	upstreamRequestId := resp.Header.Get(common2.RequestIdKey)
+	if upstreamRequestId == "" && info.ChannelType == channelconstant.ChannelTypeSub2API {
+		upstreamRequestId = resp.Header.Get(common2.Sub2APIRequestIdKey)
+	}
+	if upstreamRequestId != "" {
+		c.Set(common2.UpstreamRequestIdKey, upstreamRequestId)
 	}
 
 	_ = req.Body.Close()
