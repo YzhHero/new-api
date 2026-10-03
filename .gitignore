@@ -48,3 +48,6 @@ go.work.sum
 # tools/api-keys: 真实名单和导出的明文密钥绝不入库，只保留示例
 tools/api-keys/*.csv
 !tools/api-keys/roster.example.csv
+
+# tools/build-image.sh --tar 导出的镜像包
+/dist/
