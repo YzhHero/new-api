@@ -1,0 +1,4 @@
+工号,分组,额度
+EMP0001,default,10
+EMP0002,vip,25
+EMP0003,,unlimited
